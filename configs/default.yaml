@@ -1,0 +1,58 @@
+# Hyperparameters for the five-class (RARV, RAFV, FARV, FAFV, RARV-SMM) semantic
+# reinforcement setting, as reported in the paper's Implementation Details (Sec. 3.5).
+
+data:
+  num_classes: 5
+  image_size: 128
+  num_frame: 4
+  target_audio_len: 64000
+  class_names: [RARV, RAFV, FARV, FAFV, RARV-SMM]
+  # RARV-SMM construction (VoxCeleb2)
+  variants: [v1, v2, v3]   # V1: same identity / different context
+                           # V2: different identity / same gender
+                           # V3: different identity / different gender
+  clip_duration_sec: [3, 10]
+  video_fps: 25
+  video_size: 224
+  audio_sample_rate: 16000
+  audio_loudness_lufs: -23
+
+semantic_scorer:
+  backbone: imagebind_huge
+  pretrained: true
+  frames_per_clip: 4
+  score_range: [0, 1]
+  default_score_on_missing: 0.5
+
+models:
+  fgmdf:
+    audio_nodes: 4
+    fusion_dim: 256
+    optimizer: adam
+    lr: 1.1e-3
+    lr_scheduler: step
+    lr_step_size: 8
+    lr_gamma: 0.5
+    epochs: 20
+    batch_size: 16
+
+  fgi:
+    network: resnet18
+    spatial_size: 28
+    optimizer: adam
+    lr: 1.0e-4
+    epochs: 100
+    batch_size: 32
+    early_stopping: true
+
+  avdf:
+    backbone: av_hubert
+    fusion_dim: 768
+    optimizer: adam
+    lr: 2.0e-4
+    weight_decay: 1.0e-4
+    epochs: 30
+    batch_size: 64
+    early_stopping: true
+
+seed: 42

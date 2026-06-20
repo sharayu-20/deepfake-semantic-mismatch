@@ -1,0 +1,20 @@
+torch>=2.0
+torchvision
+torchaudio
+numpy
+scikit-learn
+tqdm
+opencv-python
+pillow
+matplotlib
+seaborn
+pyyaml
+pytorch-lightning
+
+# Frozen semantic scorer (models/semantic_scorer.py)
+# pip install git+https://github.com/facebookresearch/ImageBind.git
+
+# Baseline backbones extended by models/*_semantic.py (clone separately, add to PYTHONPATH):
+#   FGMDF — https://github.com/yinqi04/Fine-grained-Multimodal-DeepFake-Classification
+#   FGI   — https://github.com/mAst97/FGI
+#   AVDF/MRDF — https://github.com/Zhixi-Cai/MRDF
