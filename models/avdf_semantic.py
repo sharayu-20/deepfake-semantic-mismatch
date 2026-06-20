@@ -12,7 +12,7 @@ Everything else -- AV-HuBERT feature extractor, transformer fusion encoder, CE l
 Lightning training/eval steps, k-fold logic -- is identical to AVDF_Multiclass.
 
 Requires the AVDF/MRDF backbone (model.avdf_multiclass.AVDF_Multiclass) from
-https://github.com/Zhixi-Cai/MRDF on PYTHONPATH.
+https://github.com/Vincent-ZHQ/MRDF on PYTHONPATH.
 """
 
 import torch
