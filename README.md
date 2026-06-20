@@ -107,5 +107,16 @@ python scripts/inference.py --model fgmdf --checkpoint summary/weight/5class_fgm
 
 ## Citation
 
-If you use this code, please cite the paper (see the PDF in this repository's
-release / arXiv listing for full bibliographic details).
+If you use this code, please cite:
+
+```bibtex
+@misc{deshmukh2026deepfakes,
+  title         = {Are DeepFakes Realistic Enough? Exploring Semantic Mismatch as a Novel Challenge},
+  author        = {Deshmukh, Sharayu Nilesh and Hambarde, Kailash A. and Costa, Joana C. and Proen\c{c}a, Hugo and Roxo, Tiago},
+  year          = {2026},
+  eprint        = {2604.28022},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2604.28022}
+}
+```
