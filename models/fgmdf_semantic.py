@@ -11,7 +11,7 @@ Loss is unchanged: loss1 (5-class CE) + loss2 (binary video CE) + loss3 (binary 
 No new loss term is needed; the semantic signal is injected directly into the features.
 
 Requires the FGMDF backbone (network.graph_video_audio_model.GAT_video_audio) from
-https://github.com/yinqi04/Fine-grained-Multimodal-DeepFake-Classification on PYTHONPATH.
+https://github.com/yinql1995/Fine-grained-Multimodal-DeepFake-Classification on PYTHONPATH.
 """
 
 import torch
