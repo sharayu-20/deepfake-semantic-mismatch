@@ -12,6 +12,10 @@ import subprocess
 from pathlib import Path
 
 
+class FFmpegNotFoundError(RuntimeError):
+    pass
+
+
 def find_ffmpeg(tool: str = "ffmpeg"):
     for path in [tool, f"/usr/bin/{tool}", f"/usr/local/bin/{tool}"]:
         result = subprocess.run(["which", path], capture_output=True)
@@ -20,10 +24,18 @@ def find_ffmpeg(tool: str = "ffmpeg"):
     return None
 
 
+def require_ffmpeg(tool: str = "ffmpeg") -> str:
+    path = find_ffmpeg(tool)
+    if path is None:
+        raise FFmpegNotFoundError(
+            f"'{tool}' not found on PATH or in /usr/bin, /usr/local/bin. "
+            f"Install ffmpeg (e.g. `brew install ffmpeg` or `apt install ffmpeg`) before running this pipeline."
+        )
+    return path
+
+
 def get_duration(file_path) -> float | None:
-    ffprobe = find_ffmpeg("ffprobe")
-    if not ffprobe:
-        return None
+    ffprobe = require_ffmpeg("ffprobe")
     cmd = [ffprobe, "-v", "error", "-show_entries", "format=duration",
            "-of", "default=noprint_wrappers=1:nokey=1", str(file_path)]
     try:
@@ -38,7 +50,7 @@ def get_duration(file_path) -> float | None:
 
 def process_video(input_path, output_path, target_duration: float, video_duration: float, start_time: float) -> bool:
     """Resize to 224x224 @ 25fps and extract a target_duration segment starting at start_time."""
-    ffmpeg = find_ffmpeg()
+    ffmpeg = require_ffmpeg()
     start_time_str = f"{start_time:.6f}".rstrip("0").rstrip(".") or "0"
     cmd = [
         ffmpeg, "-y", "-i", str(input_path),
@@ -60,7 +72,7 @@ def process_video(input_path, output_path, target_duration: float, video_duratio
 
 def process_audio(input_path, output_path, target_duration: float, audio_duration: float) -> bool:
     """Mono, 16kHz, loudness-normalised to -23 LUFS; truncated or looped to target_duration."""
-    ffmpeg = find_ffmpeg()
+    ffmpeg = require_ffmpeg()
     if audio_duration >= target_duration:
         cmd = [
             ffmpeg, "-y", "-i", str(input_path),
@@ -113,7 +125,7 @@ def process_audio(input_path, output_path, target_duration: float, audio_duratio
 
 def combine_audio_video(video_path, audio_path, output_path) -> bool:
     """Mux the standardised video stream with the standardised (mismatched) audio stream."""
-    ffmpeg = find_ffmpeg()
+    ffmpeg = require_ffmpeg()
     cmd = [
         ffmpeg, "-y",
         "-i", str(video_path),

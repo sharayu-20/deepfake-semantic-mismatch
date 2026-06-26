@@ -30,7 +30,10 @@ def parse_txt(txt_path):
     entries = []
     with open(txt_path, "r") as fh:
         for line in fh:
-            img_path = line.rstrip()[:-4]  # strip " L S"
+            # "<frame_path> <label> <start_second>" -> drop the trailing two
+            # whitespace-separated fields. (Don't slice off a fixed number of
+            # characters: that breaks the moment label or start_second hits 2 digits.)
+            img_path = line.rstrip().rsplit(maxsplit=2)[0]
             frame_dir = os.path.split(img_path)[0]
 
             audio_files = glob.glob(os.path.join(frame_dir, "16k_*.wav"))

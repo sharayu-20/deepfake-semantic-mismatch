@@ -8,6 +8,13 @@ forward(video, audio, semantic_score) signature). For AVDF, see train_avdf.py
 Pre-requisite: run compute_semantic_scores.py to generate the scores JSON for
 the chosen RARV-SMM variant.
 
+Hyperparameters (batch_size, epochs, lr, lr_step_size, lr_gamma) are read from
+configs/default.yaml's models.<model> block by default; pass --batch_size etc.
+explicitly to override. FGI's config has no lr_step_size/lr_gamma entries, so it
+falls back to FGMDF's published StepLR schedule -- this loop applies the same
+generic StepLR to both backbones for simplicity, which differs slightly from
+FGI's original (scheduler-free, early-stopping-only) training recipe.
+
 Usage:
     python scripts/train.py --model fgmdf --variant v1 \
         --train_txt data_path/train_path_5class_v1.txt \
@@ -24,6 +31,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import yaml
 from sklearn.metrics import confusion_matrix, roc_auc_score
 from torch.optim import lr_scheduler
 from tqdm import tqdm
@@ -34,6 +42,17 @@ from utils.logger import EpochLogger
 
 NUM_CLASSES = 5
 CLASS_NAMES = ["RARV", "RAFV", "FARV", "FAFV", "RARV-SMM"]
+
+DEFAULT_CONFIG = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "configs", "default.yaml")
+
+
+def load_model_config(config_path, model_name):
+    """Load configs/<...>.yaml and return the models[model_name] block (or {} if absent)."""
+    if not config_path or not os.path.exists(config_path):
+        return {}
+    with open(config_path) as f:
+        config = yaml.safe_load(f) or {}
+    return config.get("models", {}).get(model_name, {})
 
 
 def build_model(model_name, num_classes):
@@ -97,11 +116,24 @@ def main():
     parser.add_argument("--log_dir", default="summary/result")
     parser.add_argument("--image_size", type=int, default=128)
     parser.add_argument("--num_frame", type=int, default=4)
-    parser.add_argument("--batch_size", type=int, default=16)
-    parser.add_argument("--epochs", type=int, default=20)
-    parser.add_argument("--lr", type=float, default=1.1e-3)
+    parser.add_argument("--config", default=DEFAULT_CONFIG,
+                        help="YAML with per-model hyperparameters (configs/default.yaml). "
+                             "Explicit --batch_size/--epochs/--lr/--lr_step_size/--lr_gamma override it.")
+    # Left as None so we can tell "not passed on the CLI" apart from "user explicitly chose
+    # the same value the config has" -- only unset args get filled in from --config below.
+    parser.add_argument("--batch_size", type=int, default=None)
+    parser.add_argument("--epochs", type=int, default=None)
+    parser.add_argument("--lr", type=float, default=None)
+    parser.add_argument("--lr_step_size", type=int, default=None)
+    parser.add_argument("--lr_gamma", type=float, default=None)
     parser.add_argument("--gpu", type=str, default="0")
     args = parser.parse_args()
+
+    model_config = load_model_config(args.config, args.model)
+    fallback = {"batch_size": 16, "epochs": 20, "lr": 1.1e-3, "lr_step_size": 8, "lr_gamma": 0.5}
+    for key in ("batch_size", "epochs", "lr", "lr_step_size", "lr_gamma"):
+        if getattr(args, key) is None:
+            setattr(args, key, model_config.get(key, fallback[key]))
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -125,7 +157,7 @@ def main():
     criterion = nn.CrossEntropyLoss().to(device)
     binary_criterion = nn.CrossEntropyLoss().to(device)
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr)
-    scheduler = lr_scheduler.StepLR(optimizer, step_size=8, gamma=0.5)
+    scheduler = lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.lr_gamma)
 
     best_acc = 0.0
     for epoch in range(args.epochs):

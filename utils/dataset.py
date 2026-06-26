@@ -43,7 +43,7 @@ def collate_fn_semantic(batch, target_audio_len: int = 64000):
     Returns:
         names                list[str]
         video_batch           [B, 120, H, W]  float32
-        audio_batch           [B, 64000]      float32 (padded)
+        audio_batch           [B, T]          float32 (padded to max(target_audio_len, longest raw audio in batch))
         semantic_score_batch  [B, 1]          float32
         total_label_batch     [B]             long
         video_label_batch     [B]             long

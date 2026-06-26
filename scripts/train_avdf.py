@@ -34,7 +34,11 @@ def main():
     parser.add_argument("--num_workers", type=int, default=16)
     parser.add_argument("--max_epochs", type=int, default=30)
     parser.add_argument("--min_epochs", type=int, default=30)
-    parser.add_argument("--patience", type=int, default=0)
+    # NOTE: min_epochs == max_epochs by default, so EarlyStopping can never actually
+    # fire here regardless of patience (Lightning won't stop before min_epochs).
+    # If you raise --max_epochs above --min_epochs, patience=0 would stop training
+    # after the very first non-improving epoch -- raise this together with max_epochs.
+    parser.add_argument("--patience", type=int, default=5)
     parser.add_argument("--learning_rate", type=float, default=2e-4)
     parser.add_argument("--weight_decay", type=float, default=1e-4)
     args = parser.parse_args()

@@ -31,8 +31,12 @@ def load_pairing_plan(plan_file):
         return list(csv.DictReader(f))
 
 
-def process_clip(clip_data, output_dir: Path, variant: str):
+def process_clip(clip_data, output_dir: Path, variant: str, seed: int):
     clip_id = int(clip_data["clip_id"])
+    # Local RNG keyed by clip_id: the global `random` module isn't ordering-safe
+    # across ThreadPoolExecutor workers, so a shared `random.seed()` call in main()
+    # would make start_time depend on nondeterministic thread scheduling.
+    rng = random.Random(seed + clip_id)
     final_clip = output_dir / f"rarv_smm_{variant}_{clip_id:05d}.mp4"
     if final_clip.exists():
         return clip_id, True, "Already exists"
@@ -49,7 +53,7 @@ def process_clip(clip_data, output_dir: Path, variant: str):
     temp_audio = output_dir / f"audio_{clip_id:05d}.wav"
 
     max_start = max(0.0, video_duration - target_duration)
-    start_time = random.uniform(0, max_start) if max_start > 0 else 0.0
+    start_time = rng.uniform(0, max_start) if max_start > 0 else 0.0
 
     if not process_video(video_file, temp_video, target_duration, video_duration, start_time):
         return clip_id, False, "Video processing failed"
@@ -75,14 +79,13 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
-    random.seed(args.seed)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     plan = load_pairing_plan(args.plan)
 
     success_count, fail_count = 0, 0
     with ThreadPoolExecutor(max_workers=args.workers) as executor:
-        futures = {executor.submit(process_clip, row, output_dir, args.variant): row for row in plan}
+        futures = {executor.submit(process_clip, row, output_dir, args.variant, args.seed): row for row in plan}
         for i, future in enumerate(as_completed(futures), start=1):
             clip_id, success, message = future.result()
             success_count += success

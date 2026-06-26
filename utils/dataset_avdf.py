@@ -51,10 +51,19 @@ class FakeavcelebSemanticDataModule(FakeavcelebDataModule):
         if not batch:
             return batch
 
-        valid_ids = set(batch["id"].tolist())
-        sem_scores = [s["semantic_score"] for s in samples if s["id"] is not None and s["id"] in valid_ids]
-        if sem_scores:
-            batch["semantic_score"] = torch.stack(sem_scores, dim=0)
-        else:
-            batch["semantic_score"] = torch.full((len(batch["id"]), 1), 0.5, dtype=torch.float32)
+        # IMPORTANT: the base MRDF collater (dataset.fakeavceleb.FakeavcelebDataModule.collater,
+        # not vendored in this repo) may reorder or drop samples relative to `samples`
+        # (e.g. sorting by sequence length for padding) -- so we cannot assume
+        # batch["id"] is in the same order as `samples`. Build an id -> score lookup
+        # first, then re-derive the score list in batch["id"]'s actual order, rather
+        # than filtering `samples` positionally. Verify this against the real MRDF
+        # collater() if you change backbone versions.
+        score_by_id = {s["id"]: s["semantic_score"] for s in samples if s["id"] is not None}
+        sem_scores = [score_by_id.get(int(sample_id), torch.tensor([0.5], dtype=torch.float32))
+                      for sample_id in batch["id"].tolist()]
+        assert len(sem_scores) == len(batch["id"]), (
+            f"semantic_score count ({len(sem_scores)}) != batch size ({len(batch['id'])}) "
+            "-- the base collater's id ordering assumption no longer holds."
+        )
+        batch["semantic_score"] = torch.stack(sem_scores, dim=0)
         return batch
