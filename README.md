@@ -56,7 +56,7 @@ pip install git+https://github.com/facebookresearch/ImageBind.git
 # Clone the baseline backbones extended by models/*_semantic.py and add to PYTHONPATH:
 git clone https://github.com/yinqi04/Fine-grained-Multimodal-DeepFake-Classification.git  # FGMDF
 git clone https://github.com/mAst97/FGI.git                                                # FGI
-git clone https://github.com/Zhixi-Cai/MRDF.git                                            # AVDF
+git clone https://github.com/Vincent-ZHQ/MRDF.git                                            # AVDF
 export PYTHONPATH=$PYTHONPATH:/path/to/Fine-grained-Multimodal-DeepFake-Classification:/path/to/FGI:/path/to/MRDF
 ```
 

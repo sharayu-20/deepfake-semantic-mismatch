@@ -8,7 +8,7 @@ JSON key format matches `meta.path`, e.g.
 precomputed JSON (e.g. RARV-SMM samples not yet scored) default to 0.5.
 
 Requires the AVDF/MRDF backbone (dataset.fakeavceleb) from
-https://github.com/Zhixi-Cai/MRDF on PYTHONPATH.
+https://github.com/Vincent-ZHQ/MRDF on PYTHONPATH.
 """
 
 import json
