@@ -8,7 +8,7 @@ giving Linear(785, num_classes). All backbone, fusion, and attention code is
 inherited unchanged.
 
 Requires the FGI backbone (model.My_Network) from
-https://github.com/mAst97/FGI on PYTHONPATH.
+https://github.com/aseuteurideu/FGI on PYTHONPATH.
 """
 
 import torch
