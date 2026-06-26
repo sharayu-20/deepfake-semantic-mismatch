@@ -15,6 +15,6 @@ pytorch-lightning
 # pip install git+https://github.com/facebookresearch/ImageBind.git
 
 # Baseline backbones extended by models/*_semantic.py (clone separately, add to PYTHONPATH):
-#   FGMDF — https://github.com/yinqi04/Fine-grained-Multimodal-DeepFake-Classification
-#   FGI   — https://github.com/mAst97/FGI
-#   AVDF/MRDF — https://github.com/Zhixi-Cai/MRDF
+#   FGMDF — https://github.com/yinql1995/Fine-grained-Multimodal-DeepFake-Classification
+#   FGI   — https://github.com/aseuteurideu/FGI
+#   AVDF/MRDF — https://github.com/Vincent-ZHQ/MRDF
