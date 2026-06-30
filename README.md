@@ -43,6 +43,7 @@ This repository contains only the **new** contributions of the paper — it does
 | Model | V1 ACC | V1 AUC | V2 ACC | V2 AUC | V3 ACC | V3 AUC |
 |:------|:------:|:------:|:------:|:------:|:------:|:------:|
 | FGMDF | 98.30  | 99.77  | 96.94  | 99.31  | 98.93  | 99.77  |
+| FGI   | 74.34  | 92.61  | 74.81  | 92.52  | 77.52  | 93.97  |
 | AVDF  | **73.47** | **93.46** | **73.06** | **93.50** | **73.00** | **93.37** |
 
 AVDF — the architecture most reliant on lip-sync/source-integrity signals rather than semantic reasoning — gains the most from the explicit semantic coherence feature.
@@ -76,7 +77,9 @@ Full per-class breakdowns and the four-class baselines are in the paper (Tables 
 | Model | Variant | Checkpoint |
 |:------|:-------:|:----------:|
 | FGMDF + Semantic | V1 / V2 / V3 | _Coming soon (GitHub Releases)_ |
-| FGI + Semantic    | V1 / V2 / V3 | _Coming soon (GitHub Releases)_ |
+| FGI + Semantic | V1 | [fgi_semantic_v1.pth.tar](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgi_semantic_v1.pth.tar) |
+| FGI + Semantic | V2 | [fgi_semantic_v2.pth.tar](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgi_semantic_v2.pth.tar) |
+| FGI + Semantic | V3 | [fgi_semantic_v3.pth.tar](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgi_semantic_v3.pth.tar) |
 | AVDF + Semantic   | V1 / V2 / V3 | _Coming soon (GitHub Releases)_ |
 
 ## Repository layout
