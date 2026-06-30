@@ -76,11 +76,15 @@ Full per-class breakdowns and the four-class baselines are in the paper (Tables 
 
 | Model | Variant | Checkpoint |
 |:------|:-------:|:----------:|
-| FGMDF + Semantic | V1 / V2 / V3 | _Coming soon (GitHub Releases)_ |
+| FGMDF + Semantic | V1 | [fgmdf_semantic_v1.pth](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgmdf_semantic_v1.pth) |
+| FGMDF + Semantic | V2 | [fgmdf_semantic_v2.pth](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgmdf_semantic_v2.pth) |
+| FGMDF + Semantic | V3 | [fgmdf_semantic_v3.pth](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgmdf_semantic_v3.pth) |
 | FGI + Semantic | V1 | [fgi_semantic_v1.pth.tar](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgi_semantic_v1.pth.tar) |
 | FGI + Semantic | V2 | [fgi_semantic_v2.pth.tar](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgi_semantic_v2.pth.tar) |
 | FGI + Semantic | V3 | [fgi_semantic_v3.pth.tar](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/fgi_semantic_v3.pth.tar) |
-| AVDF + Semantic   | V1 / V2 / V3 | _Coming soon (GitHub Releases)_ |
+| AVDF + Semantic | V1 | [avdf_semantic_v1.ckpt](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/avdf_semantic_v1.ckpt) |
+| AVDF + Semantic | V2 | [avdf_semantic_v2.ckpt](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/avdf_semantic_v2.ckpt) |
+| AVDF + Semantic | V3 | [avdf_semantic_v3.ckpt](https://github.com/sharayu-20/deepfake-semantic-mismatch/releases/download/v1.0/avdf_semantic_v3.ckpt) |
 
 ## Repository layout
 
